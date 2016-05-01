@@ -545,16 +545,18 @@ void TrainModel() {
   long a, b, c, d;
   FILE *fo;
   pthread_t *pt = (pthread_t *)malloc(num_threads * sizeof(pthread_t));
-  printf("Starting training using file %s\n", train_file);
+  printf("Starting training using file %s, with %u threads.\n", train_file, num_threads);
   starting_alpha = alpha;
   if (read_vocab_file[0] != 0) ReadVocab(); else LearnVocabFromTrainFile();
   if (save_vocab_file[0] != 0) SaveVocab();
   if (output_file[0] == 0) return;
   InitNet();
   if (negative > 0) InitUnigramTable();
+  printf("Starting threads to train the model.\n");
   start = clock();
   for (a = 0; a < num_threads; a++) pthread_create(&pt[a], NULL, TrainModelThread, (void *)a);
   for (a = 0; a < num_threads; a++) pthread_join(pt[a], NULL);
+  printf("All threads finished training the model.\n");
   fo = fopen(output_file, "wb");
   if (classes == 0) {
     // Save the word vectors
