@@ -16,7 +16,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#ifdef __MACH__
+#include <stdlib.h>
+#elif
 #include <malloc.h>
+#endif
 #include <ctype.h>
 
 const long long max_size = 2000;         // max length of strings
